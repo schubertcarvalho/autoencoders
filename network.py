@@ -1,3 +1,7 @@
+# SUperNet models
+# Created by Schubert Carvalho
+# 25.04.2019
+
 import torch
 import torch.nn.functional as F
 from torch import nn
