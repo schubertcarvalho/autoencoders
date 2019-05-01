@@ -105,8 +105,10 @@ class SUperNet(nn.Module):
         x = self.maxpool(F.relu(self.conv4a(x)))
         self.skip_con.append(x)
         x = self.maxpool(F.relu(self.conv5a(x)))
+
         # CLass scores
         scores = self.fc1a(x.view(x.shape[0], -1))
+
         # Decoder
         x = torch.cat((self.skip_con.pop(), F.interpolate(x, scale_factor=2)), dim=1)
         x = self.deconv5a(x)
@@ -150,8 +152,10 @@ class SUperNet2(nn.Module):
         x = self.maxpool(F.relu(self.conv4a(x)))
         self.skip_con.append(x)
         x = self.maxpool(F.relu(self.conv5a(x)))
+
         # CLass scores
         scores = F.interpolate(self.conv1x(x), scale_factor=32)
+
         # Decoder
         x = torch.cat((self.skip_con.pop(), F.interpolate(x, scale_factor=2)), dim=1)
         x = self.deconv5a(x)
@@ -167,6 +171,7 @@ class SUperNet2(nn.Module):
         return x
 
 
+# Added regularized layers: Batchnorm
 class SUperNet3(nn.Module):
     def __init__(self):
         self.skip_con = []
@@ -201,8 +206,10 @@ class SUperNet3(nn.Module):
         x = self.maxpool(F.relu(self.bn4a(self.conv4a(x))))
         self.skip_con.append(x)
         x = self.maxpool(F.relu(self.bn5a(self.conv5a(x))))
+
         # CLass scores
         scores = F.interpolate(self.conv1x(x), scale_factor=32)
+
         # Decoder
         x = torch.cat((self.skip_con.pop(), F.interpolate(x, scale_factor=2)), dim=1)
         x = self.deconv5a(x)
@@ -218,6 +225,7 @@ class SUperNet3(nn.Module):
         return x
 
 
+# Initialize network weights
 def weights_init(m):
     if isinstance(m, nn.Conv2d):
         nn.init.kaiming_normal_(m.weight)
