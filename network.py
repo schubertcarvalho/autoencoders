@@ -10,17 +10,17 @@ from torch import nn
 class CAE(nn.Module):
     def __init__(self):
         super(CAE, self).__init__()
-        self.conv1a = nn.Conv2d(3, 32, (3, 3), padding=1)
-        self.conv2a = nn.Conv2d(32, 64, (3, 3), padding=1)
-        self.conv3a = nn.Conv2d(64, 128, (3, 3), padding=1)
-        self.conv4a = nn.Conv2d(128, 256, (3, 3), padding=1)
-        self.conv5a = nn.Conv2d(256, 512, (3, 3), padding=1)
+        self.conv1a = nn.Conv2d(3, 32, kernel_size=3, padding=1)
+        self.conv2a = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.conv3a = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv4a = nn.Conv2d(128, 256, kernel_size=3, padding=1)
+        self.conv5a = nn.Conv2d(256, 512, kernel_size=3, padding=1)
         self.maxpool = nn.MaxPool2d((2, 2))
-        self.deconv5a = nn.ConvTranspose2d(512, 256, (3, 3), padding=1)
-        self.deconv4a = nn.ConvTranspose2d(256, 128, (3, 3), padding=1)
-        self.deconv3a = nn.ConvTranspose2d(128, 64, (3, 3), padding=1)
-        self.deconv2a = nn.ConvTranspose2d(64, 32, (3, 3), padding=1)
-        self.deconv1a = nn.ConvTranspose2d(32, 3, (3, 3), padding=1)
+        self.deconv5a = nn.ConvTranspose2d(512, 256, kernel_size=3, padding=1)
+        self.deconv4a = nn.ConvTranspose2d(256, 128, kernel_size=3, padding=1)
+        self.deconv3a = nn.ConvTranspose2d(128, 64, kernel_size=3, padding=1)
+        self.deconv2a = nn.ConvTranspose2d(64, 32, kernel_size=3, padding=1)
+        self.deconv1a = nn.ConvTranspose2d(32, 3, kernel_size=3, padding=1)
 
     def forward(self, x):
         x = self.maxpool(F.relu(self.conv1a(x), inplace=True))
@@ -37,21 +37,23 @@ class CAE(nn.Module):
         return x
 
 
+# CAE with skipped connections
 class CAESKC(nn.Module):
     def __init__(self):
+        # skipped connection stack
         self.skip_con = []
         super(CAESKC, self).__init__()
-        self.conv1a = nn.Conv2d(3, 32, (3, 3), padding=1)
-        self.conv2a = nn.Conv2d(32, 64, (3, 3), padding=1)
-        self.conv3a = nn.Conv2d(64, 128, (3, 3), padding=1)
-        self.conv4a = nn.Conv2d(128, 256, (3, 3), padding=1)
-        self.conv5a = nn.Conv2d(256, 512, (3, 3), padding=1)
+        self.conv1a = nn.Conv2d(3, 32, kernel_size=3, padding=1)
+        self.conv2a = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.conv3a = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv4a = nn.Conv2d(128, 256, kernel_size=3, padding=1)
+        self.conv5a = nn.Conv2d(256, 512, kernel_size=3, padding=1)
         self.maxpool = nn.MaxPool2d((2, 2))
-        self.deconv5a = nn.ConvTranspose2d(512+256, 256, (3, 3), padding=1)
-        self.deconv4a = nn.ConvTranspose2d(256+128, 128, (3, 3), padding=1)
-        self.deconv3a = nn.ConvTranspose2d(128+64, 64, (3, 3), padding=1)
-        self.deconv2a = nn.ConvTranspose2d(64+32, 32, (3, 3), padding=1)
-        self.deconv1a = nn.ConvTranspose2d(32, 3, (3, 3), padding=1)
+        self.deconv5a = nn.ConvTranspose2d(512+256, 256, kernel_size=3, padding=1)
+        self.deconv4a = nn.ConvTranspose2d(256+128, 128, kernel_size=3, padding=1)
+        self.deconv3a = nn.ConvTranspose2d(128+64, 64, kernel_size=3, padding=1)
+        self.deconv2a = nn.ConvTranspose2d(64+32, 32, kernel_size=3, padding=1)
+        self.deconv1a = nn.ConvTranspose2d(32, 3, kernel_size=3, padding=1)
 
     def forward(self, x):
         x = self.maxpool(F.relu(self.conv1a(x), inplace=True))
@@ -77,21 +79,22 @@ class CAESKC(nn.Module):
         return x
 
 
+# SuperNet models
 class SUperNet(nn.Module):
     def __init__(self):
         self.skip_con = []
         super(SUperNet, self).__init__()
-        self.conv1a = nn.Conv2d(3, 32, (3, 3), padding=1)
-        self.conv2a = nn.Conv2d(32, 48, (3, 3), padding=1)
-        self.conv3a = nn.Conv2d(48, 48, (3, 3), padding=1)
-        self.conv4a = nn.Conv2d(48, 96, (3, 3), padding=1)
-        self.conv5a = nn.Conv2d(96, 96, (3, 3), padding=1)
+        self.conv1a = nn.Conv2d(3, 32, kernel_size=3, padding=1)
+        self.conv2a = nn.Conv2d(32, 48, kernel_size=3, padding=1)
+        self.conv3a = nn.Conv2d(48, 48, kernel_size=3, padding=1)
+        self.conv4a = nn.Conv2d(48, 96, kernel_size=3, padding=1)
+        self.conv5a = nn.Conv2d(96, 96, kernel_size=3, padding=1)
         self.maxpool = nn.MaxPool2d((2, 2))
-        self.deconv5a = nn.ConvTranspose2d(96+96, 96, (3, 3), padding=1)
-        self.deconv4a = nn.ConvTranspose2d(96+48, 48, (3, 3), padding=1)
-        self.deconv3a = nn.ConvTranspose2d(48+48, 48, (3, 3), padding=1)
-        self.deconv2a = nn.ConvTranspose2d(48+32, 32, (3, 3), padding=1)
-        self.deconv1a = nn.ConvTranspose2d(32, 3, (3, 3), padding=1)
+        self.deconv5a = nn.ConvTranspose2d(96+96, 96, kernel_size=3, padding=1)
+        self.deconv4a = nn.ConvTranspose2d(96+48, 48, kernel_size=3, padding=1)
+        self.deconv3a = nn.ConvTranspose2d(48+48, 48, kernel_size=3, padding=1)
+        self.deconv2a = nn.ConvTranspose2d(48+32, 32, kernel_size=3, padding=1)
+        self.deconv1a = nn.ConvTranspose2d(32, 3, kernel_size=3, padding=1)
         self.fc1a = nn.Linear(96, 10)
 
     def forward(self, x):
@@ -127,18 +130,18 @@ class SUperNet2(nn.Module):
     def __init__(self):
         self.skip_con = []
         super(SUperNet2, self).__init__()
-        self.conv1a = nn.Conv2d(3, 32, (3, 3), padding=1)
-        self.conv2a = nn.Conv2d(32, 48, (3, 3), padding=1)
-        self.conv3a = nn.Conv2d(48, 48, (3, 3), padding=1)
-        self.conv4a = nn.Conv2d(48, 96, (3, 3), padding=1)
-        self.conv5a = nn.Conv2d(96, 96, (3, 3), padding=1)
-        self.conv1x = nn.Conv2d(96, 10, (1, 1))
+        self.conv1a = nn.Conv2d(3, 32, kernel_size=3, padding=1)
+        self.conv2a = nn.Conv2d(32, 48, kernel_size=3, padding=1)
+        self.conv3a = nn.Conv2d(48, 48, kernel_size=3, padding=1)
+        self.conv4a = nn.Conv2d(48, 96, kernel_size=3, padding=1)
+        self.conv5a = nn.Conv2d(96, 96, kernel_size=3, padding=1)
+        self.conv1x = nn.Conv2d(96, 10, kernel_size=1)
         self.maxpool = nn.MaxPool2d((2, 2))
-        self.deconv5a = nn.ConvTranspose2d(96+96, 96, (3, 3), padding=1)
-        self.deconv4a = nn.ConvTranspose2d(96+48, 48, (3, 3), padding=1)
-        self.deconv3a = nn.ConvTranspose2d(48+48, 48, (3, 3), padding=1)
-        self.deconv2a = nn.ConvTranspose2d(48+32, 32, (3, 3), padding=1)
-        self.deconv1a = nn.ConvTranspose2d(32, 3, (3, 3), padding=1)
+        self.deconv5a = nn.ConvTranspose2d(96+96, 96, kernel_size=3, padding=1)
+        self.deconv4a = nn.ConvTranspose2d(96+48, 48, kernel_size=3, padding=1)
+        self.deconv3a = nn.ConvTranspose2d(48+48, 48, kernel_size=3, padding=1)
+        self.deconv2a = nn.ConvTranspose2d(48+32, 32, kernel_size=3, padding=1)
+        self.deconv1a = nn.ConvTranspose2d(32, 3, kernel_size=3, padding=1)
         self.fc1a = nn.Linear(96, 10)
 
     def forward(self, x):
@@ -166,33 +169,36 @@ class SUperNet2(nn.Module):
         x = torch.cat((self.skip_con.pop(), F.interpolate(x, scale_factor=2)), dim=1)
         x = self.deconv2a(x)
         x = self.deconv1a(F.interpolate(x, scale_factor=2))
+        # Concatenate scores and decoder output
         x = torch.cat([x, scores], dim=1)
 
         return x
 
 
-# Added regularized layers: Batchnorm
+# Added Batchnorm layers
 class SUperNet3(nn.Module):
     def __init__(self):
+        # Skipped connection stack
         self.skip_con = []
+
         super(SUperNet3, self).__init__()
-        self.conv1a = nn.Conv2d(3, 32, (3, 3), padding=1)
+        self.conv1a = nn.Conv2d(3, 32, kernel_size=3, padding=1)
         self.bn1a = nn.BatchNorm2d(32)
-        self.conv2a = nn.Conv2d(32, 48, (3, 3), padding=1)
+        self.conv2a = nn.Conv2d(32, 48, kernel_size=3, padding=1)
         self.bn2a = nn.BatchNorm2d(48)
-        self.conv3a = nn.Conv2d(48, 48, (3, 3), padding=1)
+        self.conv3a = nn.Conv2d(48, 48, kernel_size=3, padding=1)
         self.bn3a = nn.BatchNorm2d(48)
-        self.conv4a = nn.Conv2d(48, 96, (3, 3), padding=1)
+        self.conv4a = nn.Conv2d(48, 96, kernel_size=3, padding=1)
         self.bn4a = nn.BatchNorm2d(96)
-        self.conv5a = nn.Conv2d(96, 96, (3, 3), padding=1)
+        self.conv5a = nn.Conv2d(96, 96, kernel_size=3, padding=1)
         self.bn5a = nn.BatchNorm2d(96)
-        self.conv1x = nn.Conv2d(96, 10, (1, 1))
+        self.conv1x = nn.Conv2d(96, 10, kernel_size=1)
         self.maxpool = nn.MaxPool2d((2, 2))
-        self.deconv5a = nn.ConvTranspose2d(96+96, 96, (3, 3), padding=1)
-        self.deconv4a = nn.ConvTranspose2d(96+48, 48, (3, 3), padding=1)
-        self.deconv3a = nn.ConvTranspose2d(48+48, 48, (3, 3), padding=1)
-        self.deconv2a = nn.ConvTranspose2d(48+32, 32, (3, 3), padding=1)
-        self.deconv1a = nn.ConvTranspose2d(32, 3, (3, 3), padding=1)
+        self.deconv5a = nn.ConvTranspose2d(96+96, 96, kernel_size=3, padding=1)
+        self.deconv4a = nn.ConvTranspose2d(96+48, 48, kernel_size=3, padding=1)
+        self.deconv3a = nn.ConvTranspose2d(48+48, 48, kernel_size=3, padding=1)
+        self.deconv2a = nn.ConvTranspose2d(48+32, 32, kernel_size=3, padding=1)
+        self.deconv1a = nn.ConvTranspose2d(32, 3, kernel_size=3, padding=1)
         self.fc1a = nn.Linear(96, 10)
 
     def forward(self, x):

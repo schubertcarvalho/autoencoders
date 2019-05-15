@@ -1,3 +1,3 @@
 # SUperNET project
-# Done first commit
-# git done
+# Supervised and Unsupervised Networks
+# Convolutional Auto Encoders
